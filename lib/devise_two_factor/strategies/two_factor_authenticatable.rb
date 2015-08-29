@@ -20,6 +20,10 @@ module Devise
       end
 
       def validate_otp(resource)
+        if resource.otp_required_for_login && (params[scope]['otp_attempt'].nil? || params[scope]['otp_attempt'].blank?)
+          errors.add(:general, "requires OTP")
+        end
+
         return true unless resource.otp_required_for_login
         return if params[scope]['otp_attempt'].nil?
         resource.valid_otp?(params[scope]['otp_attempt'])
